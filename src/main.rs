@@ -1,10 +1,10 @@
 // src/main.rs
 
-mod dbms_rust_project; // Declare the module (matches directory name)
+mod luma-db; // Declare the module (matches directory name)
 
 use crate::dbms_rust_project::Repl;
 use crate::dbms_rust_project::Tokenizer;
-use crate::dbms_rust_project::Token;
+use crate::lumadb_core::Token;
 
 fn main() {
     let mut repl = Repl::new(); // Instantiate the Repl object
