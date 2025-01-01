@@ -1,4 +1,4 @@
-// src/dbms_rust_project/mod.rs
+// src/mod.rs
 pub mod repl;
 pub mod tokenizer;
 pub mod token;
