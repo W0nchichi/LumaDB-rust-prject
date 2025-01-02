@@ -3,8 +3,14 @@ name = "luma-db"
 version = "0.1.0"
 edition = "2021"
 
-[dependencies]
-
 [lib]
 name = "lumadb"
-path = "lumadb/lib.rs"
+path = "src/lumadb/lib.rs"
+
+[[bin]]
+name = "server"
+path = "src/lumadb_server/server.rs"
+
+[[bin]]
+name = "client"
+path = "src/lumadb_client/client.rs"

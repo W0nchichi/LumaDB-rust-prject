@@ -3,6 +3,6 @@
 //filePath for all Tables, maybe make it changeable later
 pub const DEFAULT_DIR: &str = "dbms_rust_project/data";
 //defualt server ip and port
-pub const DEFAULT_DIR: &str = "127.0.0.1:7777";
+pub const DEFAULT_CONNECTION: &str = "127.0.0.1:7777";
 //table name when none is supplied
 pub const DEFAULT_TABLE: &str = "default_table_name";
