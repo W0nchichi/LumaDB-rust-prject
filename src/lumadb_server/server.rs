@@ -7,8 +7,15 @@ use lumadb::config::DEFAULT_CONNECTION;
 fn handle_connection(mut stream: TcpStream) {
     let mut buffer = [0; 512];
     match stream.read(&mut buffer) {
-        Ok(_) => println!("Request: {}", String::from_utf8_lossy(&buffer[..])),
-        Err(e) => eprintln!("Failed to read from stream: {}", e),
+        Ok(bytes_read) if bytes_read > 0 => {
+            println!("Request: {}", String::from_utf8_lossy(&buffer[..]));
+        }
+        Ok(_) => {
+            println!("Client sent an empty response");
+        }
+        Err(e) => {
+            eprintln!("Failed to read from stream: {}", e);
+        }
     }
 }
 
