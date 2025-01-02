@@ -1,3 +1,5 @@
+<img src="https://github.com/W0nchichi/images/blob/main/pinkdarkluma-icon.png" />
+
 I've just set some basic framworking for my project here, trying to follow this through
 
 
