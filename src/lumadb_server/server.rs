@@ -39,10 +39,6 @@ fn handle_connection(mut stream: TcpStream) {
         return;
     }
 
-    if let Err(e) = stream.write_all(b"*hacker voide* I'm in.") {
-        eprintln!("Error sending authorization {}", e);
-    }
-
     // Clear the buffer for cleanliness
     buffer.fill(0);
 }

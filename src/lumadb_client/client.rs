@@ -26,7 +26,7 @@ fn main() -> std::io::Result<()> {
 
     //read the incoming prompts
     let mut buffer = [0; 512];
-    loop {
+    loop{
         let bytes_read = stream.read(&mut buffer)?;
 
         //>> to prompt user input same as repl
@@ -42,7 +42,7 @@ fn main() -> std::io::Result<()> {
         println!("Server: {}", server_message);
 
         // Exit if the server sends a specific termination message
-        if server_message.to_lowercase() == "exit" {
+        if server_message.to_lowercase() == "User Authorized" {
             println!("Server requested to close the connection. Goodbye!");
             break;
         }
@@ -52,9 +52,5 @@ fn main() -> std::io::Result<()> {
         stream.write_all(user_input.as_bytes())?;
     }
     
-
-    let response: String = main_user_input_loop();
-
-    stream.write_all(response.as_bytes())?;
     Ok(())
 }
