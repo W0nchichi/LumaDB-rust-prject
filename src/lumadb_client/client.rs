@@ -1,12 +1,15 @@
+//src/lumabdb_client/client.rs
+
 use std::io::prelude::*;
 use std::net::TcpStream;
 use lumadb::config::DEFAULT_CONNECTION;
 use std::io::{self, Write, BufRead};
-use crate::lumadb_client::repl;
+use crate::lumadb_client::repl::Repl;
+
 
 //this code is just rehashed from the REPL without the ';' rules
 //also only need to take 1 line inputs
-fn main_user_input_loop() -> String {
+pub fn main_user_input_loop() -> String {
     //take the input
     let stdin = io::stdin();
     let mut stdout = io::stdout();
@@ -21,7 +24,7 @@ fn main_user_input_loop() -> String {
     return input.trim().to_string();
 }
 
-fn main() -> std::io::Result<()> {
+pub fn main() -> std::io::Result<()> {
     println!("{}", DEFAULT_CONNECTION);
     let mut stream = TcpStream::connect(DEFAULT_CONNECTION)?;
 
@@ -35,6 +38,7 @@ fn main() -> std::io::Result<()> {
 
         if bytes_read == 0 {
             //authentication has let pass, and then pass to the REPL
+            let repl = Repl::new();
             println!("Server closed the connection.");
             break;
         }

@@ -1,5 +1,5 @@
 // src/main.rs
-mod lumadb_server {pub mod server;}
+mod lumadb_client;
 
 fn main() {
     print!("haii");
