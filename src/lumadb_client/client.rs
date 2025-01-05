@@ -2,6 +2,7 @@ use std::io::prelude::*;
 use std::net::TcpStream;
 use lumadb::config::DEFAULT_CONNECTION;
 use std::io::{self, Write, BufRead};
+use crate::lumadb_client::repl;
 
 //this code is just rehashed from the REPL without the ';' rules
 //also only need to take 1 line inputs
@@ -33,6 +34,7 @@ fn main() -> std::io::Result<()> {
         print!(">>");
 
         if bytes_read == 0 {
+            //authentication has let pass, and then pass to the REPL
             println!("Server closed the connection.");
             break;
         }

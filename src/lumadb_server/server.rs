@@ -39,8 +39,6 @@ fn handle_connection(mut stream: TcpStream) {
         return;
     }
 
-    // Clear the buffer for cleanliness
-    buffer.fill(0);
 }
 
 pub fn create_listener(addr: String) -> Result<()> {
