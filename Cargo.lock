@@ -3,5 +3,5 @@
 version = 4
 
 [[package]]
-name = "luma-db"
+name = "luma_db"
 version = "0.1.0"

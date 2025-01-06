@@ -4,7 +4,9 @@ use std::io::prelude::*;
 use std::net::TcpStream;
 use lumadb::config::DEFAULT_CONNECTION;
 use std::io::{self, Write, BufRead};
+//need to use luma_db instead of a crate because it isn't a crate, is a module, check Cargo.toml
 use crate::lumadb_client::repl::Repl;
+
 
 
 //this code is just rehashed from the REPL without the ';' rules
@@ -39,7 +41,8 @@ pub fn main() -> std::io::Result<()> {
         if bytes_read == 0 {
             //authentication has let pass, and then pass to the REPL
             let repl = Repl::new();
-            println!("Server closed the connection.");
+            let input = repl::main_loop();
+            println!(input);
             break;
         }
         
