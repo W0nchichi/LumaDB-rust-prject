@@ -3,14 +3,10 @@ name = "luma_db"
 version = "0.1.0"
 edition = "2021"
 
-[lib]
-name = "lumadb"
-path = "src/lib.rs"
-
-[[bin]]
-name = "server"
-path = "src/lumadb_server/server.rs"
-
-[[bin]]
-name = "client"
-path = "src/lumadb_client/client.rs"
+[workspace]
+members = [
+    "lumadb_client",
+    "lumadb_server",
+    "lumadb_core",
+    "lumadb"
+]

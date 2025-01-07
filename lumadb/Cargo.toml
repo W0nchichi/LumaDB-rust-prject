@@ -1,0 +1,9 @@
+[package]
+name = "lumadb"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "lumadb"
+path = "src/lib.rs"
+

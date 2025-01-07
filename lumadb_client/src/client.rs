@@ -2,11 +2,10 @@
 
 use std::io::prelude::*;
 use std::net::TcpStream;
-use crate::lumadb::config::DEFAULT_CONNECTION;
-
 use std::io::{self, Write, BufRead};
 //need to use luma_db instead of a crate because it isn't a crate, is a module, check Cargo.toml
-use crate::lumadb_client::repl::Repl;
+use lumadb_client::repl::Repl;
+use lumadb::config::DEFAULT_CONNECTION;
 
 
 
@@ -41,6 +40,14 @@ pub fn main() -> std::io::Result<()> {
 
         if bytes_read == 0 {
             //authentication has let pass, and then pass to the REPL
+            loop {
+                let mut repl = Repl::new();
+                let input = repl.main_loop();
+                if input == "exit" {
+                    break
+                }
+                //send message to server
+            }
             break;
         }
         

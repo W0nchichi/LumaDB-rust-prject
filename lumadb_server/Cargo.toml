@@ -1,0 +1,13 @@
+# \luma_db\lumadb_server\Cargo.toml
+[package]
+name = "lumadb_server"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Core crate for shared logic on serverside
+lumadb_core = { path = "../lumadb_core" }
+
+[[bin]]
+name = "server"
+path = "src/server.rs"

@@ -1,0 +1,11 @@
+[package]
+name = "lumadb_client"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "client"
+path = "src/client.rs"
+
+[dependencies]
+lumadb = { path = "../lumadb" } # Add this dependency
