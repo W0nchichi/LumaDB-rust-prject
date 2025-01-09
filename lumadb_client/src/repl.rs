@@ -87,7 +87,6 @@ impl Repl {
         }
         // Where we can actually access and return the input
         let result: String = Self::multiline_to_singleline(&mut self.history);
-        print!("Input is {:?}", result);
         return result
     }
 }

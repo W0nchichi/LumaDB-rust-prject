@@ -1,4 +1,4 @@
-use crate::dbms_rust_project::token::Token;
+use crate::token::Token;
 use std::str::Chars;
 use std::iter::Peekable;
 

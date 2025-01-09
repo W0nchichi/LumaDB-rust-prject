@@ -1,61 +1,67 @@
-use std::io::prelude::*;
-use std::io::Result;
-use std::net::TcpListener;
-use std::net::TcpStream;
+use std::io::{Read, Write};
+use std::net::{TcpListener, TcpStream};
 use lumadb::config::DEFAULT_CONNECTION;
 
-fn handle_connection(mut stream: TcpStream) {
+fn authenticate(mut stream: &mut TcpStream) -> Result<bool, String> {
     let mut buffer = [0; 512];
-    //this is where actual connections can be written to back and forth :3
-    //first ask for a username, take an error if the connection is prematurely ended
-    if let Err(e) = stream.write_all(b"Please enter your username: ") {
-        eprintln!("Error sending username prompt: {}", e);
-        return;
+    
+    // Send username prompt
+    //use map_err now to simplify catching the error shit
+    stream.write_all(b"Please enter your username: ").map_err(|e| e.to_string())?;
+    let bytes_read = stream.read(&mut buffer).map_err(|e| e.to_string())?;
+    if bytes_read == 0 {
+        return Err("Client disconnected during username input.".into());
     }
-
-    if let Ok(bytes_read) = stream.read(&mut buffer) {
-        let username = String::from_utf8_lossy(&buffer[..bytes_read]).trim().to_string();
-        //replace with actual authentication later
-        println!("Received username: {}", username);
-    } else {
-        eprintln!("Failed to read username.");
-        return;
-    }
-
-    // Clear the buffer for password
+    let username = String::from_utf8_lossy(&buffer[..bytes_read]).trim().to_string();
+    
+    // Send password prompt
     buffer.fill(0);
-
-    //ask for a password
-    if let Err(e) = stream.write_all(b"Please enter your password: ") {
-        eprintln!("Error sending password prompt: {}", e);
-        return;
+    stream.write_all(b"Please enter your password: ").map_err(|e| e.to_string())?;
+    let bytes_read = stream.read(&mut buffer).map_err(|e| e.to_string())?;
+    if bytes_read == 0 {
+        return Err("Client disconnected during password input.".into());
     }
+    let password = String::from_utf8_lossy(&buffer[..bytes_read]).trim().to_string();
 
-    if let Ok(bytes_read) = stream.read(&mut buffer) {
-        let password = String::from_utf8_lossy(&buffer[..bytes_read]).trim().to_string();
-        println!("Received password: {}", password);
+    // Simulate authentication (replace with actual logic)
+    if username == "admin" && password == "password" {
+        stream.write_all(b"User Authorized").map_err(|e| e.to_string())?;
+        Ok(true)
     } else {
-        eprintln!("Failed to read password.");
-        return;
+        stream.write_all(b"Authentication Failed").map_err(|e| e.to_string())?;
+        Ok(false)
     }
-
 }
 
-pub fn create_listener(addr: String) -> Result<()> {
+fn handle_connection(mut stream: TcpStream) {
+    match authenticate(&mut stream) {
+        Ok(true) => {
+            println!("Client authenticated successfully.");
+            // Additional REPL or command handling logic can go here.
+        }
+        Ok(false) => println!("Client failed authentication."),
+        Err(e) => eprintln!("Error during authentication: {}", e),
+    }
+}
+
+//use a borrowed pointer to make easier
+pub fn create_listener(addr: &String) -> std::io::Result<()> {
     let listener = TcpListener::bind(addr)?;
+    println!("Server is listening on {}", addr);
     for stream in listener.incoming() {
         match stream {
-            Ok(mut stream) => {
+            Ok(stream) => {
                 println!("New connection established: {:?}", stream.peer_addr());
-                
                 handle_connection(stream);
             }
-            Err(e) => eprintln!("Failed to establish connection: {}", e),
+            Err(e) => eprintln!("Connection error: {}", e),
         }
     }
     Ok(())
 }
 
 fn main() {
-    create_listener(DEFAULT_CONNECTION.to_string()).expect("Could not create connection");
+    if let Err(e) = create_listener(&DEFAULT_CONNECTION.to_string()) {
+        eprintln!("Error starting server: {}", e);
+    }
 }

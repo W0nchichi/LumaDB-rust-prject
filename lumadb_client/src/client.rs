@@ -1,70 +1,76 @@
-//src/lumabdb_client/client.rs
+    //src/lumabdb_client/client.rs
 
-use std::io::prelude::*;
-use std::net::TcpStream;
-use std::io::{self, Write, BufRead};
-//need to use luma_db instead of a crate because it isn't a crate, is a module, check Cargo.toml
-use lumadb_client::repl::Repl;
-use lumadb::config::DEFAULT_CONNECTION;
+    use std::io::prelude::*;
+    use std::net::TcpStream;
+    use std::io::{self, Write, BufRead};
+    //need to use luma_db instead of a crate because it isn't a crate, is a module, check Cargo.toml
+    use lumadb_client::repl::Repl;
+    use lumadb::config::DEFAULT_CONNECTION;
 
 
 
-//this code is just rehashed from the REPL without the ';' rules
-//also only need to take 1 line inputs
-pub fn main_user_input_loop() -> String {
-    //take the input
-    let stdin = io::stdin();
-    let mut stdout = io::stdout();
-
-    let mut handle = stdin.lock();
-
-    stdout.flush().expect("Failed to flush stdout");
-
+    //this code is just rehashed from the REPL without the ';' rules
+    //also only need to take 1 line inputs
+    //got too repetitive to do this manually lol
+fn get_user_input(server_prompt: &str) -> String {
+    println!("{}", server_prompt);
+    //still drk what flushing is
+    io::stdout().flush().expect("failed to flush");
     let mut input = String::new();
-
-    handle.read_line(&mut input).expect("Failed to read input");
+    //get input
+    io::stdin().lock().read(&mut input).expect("failed to read input");
     return input.trim().to_string();
 }
 
-pub fn main() -> std::io::Result<()> {
-    println!("{}", DEFAULT_CONNECTION);
-    let mut stream = TcpStream::connect(DEFAULT_CONNECTION)?;
-
-    //read the incoming prompts
+//changed to a reference of a stream that instantiated in the main
+fn handle_authentication(mut stream: &TcpStream) -> io::Result<bool> {
     let mut buffer = [0; 512];
-    loop{
-        let bytes_read = stream.read(&mut buffer)?;
+    //this is where actual connections can be written to back and forth :3
+    //first ask for a username, take an error if the connection is prematurely ended
+    let bytes_read = stream.read(&mut buffer);
+    println!("{}", String::from_utf8_lossy(&buffer[..bytes_read]));
+    let username = get_user_input("> ");
+    stream.write_all(username.as_bytes())?;
 
-        //>> to prompt user input same as repl
-        print!(">>");
+    //password same deal
+    let bytes_read = stream.read(&mut buffer);
+    println!("{}", String::from_utf8_lossy(&buffer[..bytes_read]));
+    let password = get_user_input("> ");
+    stream.write_all(password.as_bytes())?;
 
-        if bytes_read == 0 {
-            //authentication has let pass, and then pass to the REPL
-            loop {
-                let mut repl = Repl::new();
-                let input = repl.main_loop();
-                if input == "exit" {
-                    break
-                }
-                //send message to server
-            }
+    // Receive authentication response hopefully
+    let bytes_read = stream.read(&mut buffer)?;
+    let response = String::from_utf8_lossy(&buffer[..bytes_read]).trim().to_string();
+    println!("Server: {}", response);
+    //needed to add 'return' as compiler wasn't recognizing this was an implicit return
+    return Ok(response == "User Authorized");
+}
+
+pub fn repl_loop(mut stream: TcpStream) -> io::Result<()> {
+    let mut repl = Repl::new();
+    loop {
+        let input = repl.main_loop();
+        if input.trim() == "exit;" {
             break;
         }
+        stream.write_all(input.as_bytes())?;
         
-        //god I love actually readable code with comments
-        let server_message = String::from_utf8_lossy(&buffer[..bytes_read]).trim().to_string();
-        println!("Server: {}", server_message);
-
-        // Exit if the server sends a specific termination message
-        if server_message.to_lowercase() == "User Authorized" {
-            println!("Server requested to close the connection. Goodbye!");
-            break;
+        let mut buffer = [0; 512];
+        let bytes_read = stream.read(&mut buffer)?;
+        if bytes_read > 0 {
+            println!("Server: {}", String::from_utf8_lossy(&buffer[..bytes_read]).trim());
         }
-
-        // Get the user's input and send it to the server
-        let user_input = main_user_input_loop();
-        stream.write_all(user_input.as_bytes())?;
     }
-    
+    Ok(())
+}
+
+pub fn main() -> io::Result<()> {
+    let mut stream = TcpStream::connect(DEFAULT_CONNECTION)?;
+    if handle_authentication(&stream)? {
+        println!("Authentication successful. Entering REPL...");
+        repl_loop(stream)?;
+    } else {
+        println!("Authentication failed. Exiting.");
+    }
     Ok(())
 }

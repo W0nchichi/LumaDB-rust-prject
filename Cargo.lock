@@ -233,6 +233,7 @@ dependencies = [
 name = "lumadb_server"
 version = "0.1.0"
 dependencies = [
+ "lumadb",
  "lumadb_core",
 ]
 

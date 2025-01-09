@@ -7,7 +7,7 @@ edition = "2021"
 [dependencies]
 # Core crate for shared logic on serverside
 lumadb_core = { path = "../lumadb_core" }
-
+lumadb = { path = "../lumadb" }
 [[bin]]
 name = "server"
 path = "src/server.rs"
