@@ -53,7 +53,7 @@ impl Repl {
             self.buffer.clear();
 
             if self.is_in_multiline {
-                print!("..");
+                print!("->");
             } else {
                 // Display the prompt
                 print!(">>");

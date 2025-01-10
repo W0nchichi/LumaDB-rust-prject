@@ -33,6 +33,22 @@ fn authenticate(mut stream: &mut TcpStream) -> Result<bool, String> {
     }
 }
 
+//getting crazy with it
+fn pass_repl_input(mut stream: &mut TcpStream) -> Result<String, String> {
+    let mut buffer = [0; 512];
+
+    // Read data from the stream
+    let bytes_read = stream.read(&mut buffer).map_err(|e| e.to_string())?;
+    
+    if bytes_read == 0 {
+        return Err("Client disconnected during REPL input.".into());
+    }
+
+    // Convert buffer to a trimmed UTF-8 string
+    let input = String::from_utf8_lossy(&buffer[..bytes_read]).trim().to_string();
+    Ok(input)
+}
+
 fn handle_connection(mut stream: TcpStream) {
     match authenticate(&mut stream) {
         Ok(true) => {
@@ -42,6 +58,9 @@ fn handle_connection(mut stream: TcpStream) {
         Ok(false) => println!("Client failed authentication."),
         Err(e) => eprintln!("Error during authentication: {}", e),
     }
+    let repl_input = pass_repl_input(&mut stream).expect("could not get repl");
+    println!("{}", repl_input);
+
 }
 
 //use a borrowed pointer to make easier
