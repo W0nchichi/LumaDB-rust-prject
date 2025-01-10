@@ -1,6 +1,8 @@
 use std::io::{Read, Write};
 use std::net::{TcpListener, TcpStream};
 use lumadb::config::DEFAULT_CONNECTION;
+use lumadb_core::tokenizer::Tokenizer;
+use lumadb_core::token::Token;
 
 fn authenticate(mut stream: &mut TcpStream) -> Result<bool, String> {
     let mut buffer = [0; 512];
@@ -49,6 +51,19 @@ fn pass_repl_input(mut stream: &mut TcpStream) -> Result<String, String> {
     Ok(input)
 }
 
+fn server_repl_loop(mut stream: &mut TcpStream){
+    //Arnold Schwatznegger voice "grah, I am de tokenator"
+    //that felt disgusting to type out
+    
+    loop {
+        let repl_input = pass_repl_input(stream).expect("could not recieve repl stuff");
+        println!("{}", repl_input);
+        let mut tokenator = Tokenizer::new(&repl_input);
+        //loop for tokens until it is done, {:?} handles all errors
+        println!("{:?}", tokenator.tokenize_all());
+    }
+}
+
 fn handle_connection(mut stream: TcpStream) {
     match authenticate(&mut stream) {
         Ok(true) => {
@@ -58,9 +73,8 @@ fn handle_connection(mut stream: TcpStream) {
         Ok(false) => println!("Client failed authentication."),
         Err(e) => eprintln!("Error during authentication: {}", e),
     }
-    let repl_input = pass_repl_input(&mut stream).expect("could not get repl");
-    println!("{}", repl_input);
-
+    //so it seems that the repl seems to freeze after the first input so
+    server_repl_loop(&mut stream);
 }
 
 //use a borrowed pointer to make easier
