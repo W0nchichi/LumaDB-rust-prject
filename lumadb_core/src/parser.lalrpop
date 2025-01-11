@@ -1,0 +1,26 @@
+
+
+grammar;
+
+extern {
+    fn Token() -> Token;
+}
+
+pub SelectStatement: Statement = {
+    <SelectToken> <IdentifierToken> <FromToken> <IdentifierToken> ";" => Statement::Select {
+        columns: vec![IdentifierToken.1],
+        table: IdentifierToken.1,
+    }
+};
+
+SelectToken: Token = {
+    Token::Select
+};
+
+IdentifierToken: Token = {
+    Token::Identifier(identifier) => identifier
+};
+
+FromToken: Token = {
+    Token::From
+};

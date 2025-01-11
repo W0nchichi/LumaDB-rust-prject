@@ -22,6 +22,7 @@ fn get_user_input(server_prompt: &str) -> String {
     return input.trim().to_string();
 }
 
+
 //changed to a reference of a stream that instantiated in the main
 fn handle_authentication(mut stream: &TcpStream) -> io::Result<bool> {
     let mut buffer = [0; 512];
@@ -47,8 +48,9 @@ fn handle_authentication(mut stream: &TcpStream) -> io::Result<bool> {
 }
 
 pub fn repl_loop(mut stream: TcpStream) -> io::Result<()> {
-    let mut repl = Repl::new();
     loop {
+        //instaitiate rpel afterwards otherwise will keep extending inputs
+        let mut repl = Repl::new();
         let input = repl.main_loop();
         if input.trim() == "exit;" {
             break;

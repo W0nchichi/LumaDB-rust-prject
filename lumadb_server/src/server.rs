@@ -1,4 +1,6 @@
 use std::io::{Read, Write};
+use std::io::stdin;
+use std::io;
 use std::net::{TcpListener, TcpStream};
 use lumadb::config::DEFAULT_CONNECTION;
 use lumadb_core::tokenizer::Tokenizer;
@@ -35,6 +37,25 @@ fn authenticate(mut stream: &mut TcpStream) -> Result<bool, String> {
     }
 }
 
+fn check_for_lost_connection(mut stream: &TcpStream, buffer: &mut [u8; 512]) -> bool{
+    match stream.read(buffer) {
+        Ok(bytes_read) => {
+            if bytes_read == 0 {
+                // No bytes read indicates the connection is closed
+                false
+            } else {
+                // Connection is still active
+                true
+            }
+        }
+        Err(_) => {
+            // An error occurred while reading from the stream
+            false
+        }
+    }
+}
+
+
 //getting crazy with it
 fn pass_repl_input(mut stream: &mut TcpStream) -> Result<String, String> {
     let mut buffer = [0; 512];
@@ -60,7 +81,11 @@ fn server_repl_loop(mut stream: &mut TcpStream){
         println!("{}", repl_input);
         let mut tokenator = Tokenizer::new(&repl_input);
         //loop for tokens until it is done, {:?} handles all errors
-        println!("{:?}", tokenator.tokenize_all());
+        let tokenated_line = tokenator.tokenize_all().expect("Could not tokenize line");
+        println!("{:?}", tokenated_line);
+        stream.write_all(format!("{:?}", tokenated_line).as_bytes())
+                .map_err(|e| e.to_string())
+                .expect("could not write");
     }
 }
 
@@ -73,7 +98,7 @@ fn handle_connection(mut stream: TcpStream) {
         Ok(false) => println!("Client failed authentication."),
         Err(e) => eprintln!("Error during authentication: {}", e),
     }
-    //so it seems that the repl seems to freeze after the first input so
+    //so it seems that the repl seems to freeze after the first input so fixed with function
     server_repl_loop(&mut stream);
 }
 
