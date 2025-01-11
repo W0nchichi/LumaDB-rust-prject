@@ -1,10 +1,11 @@
-// src/dbms_rust_project/token.rs
+// luma_db/lumadb_core/src/token.rs
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum Token {
     // Keywords
     Select,
     Insert,
+    Into,
     Delete,
     Where,
     From,

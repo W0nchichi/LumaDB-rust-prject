@@ -1,10 +1,8 @@
+//luma_db/lumadb_core/src/select.lalrpop
+use crate::token::Token;
 
 
 grammar;
-
-extern {
-    fn Token() -> Token;
-}
 
 pub SelectStatement: Statement = {
     <SelectToken> <IdentifierToken> <FromToken> <IdentifierToken> ";" => Statement::Select {

@@ -1,0 +1,29 @@
+//luma_db/lumadb_core/src/insert.lalrpop
+use crate::token::Token;
+
+
+grammar;
+
+InsertStatement: Statement = {
+    <Insert> <Into> <Identifier> <OpenParen> <Identifier> <CloseParen> <OpenParen> <Numeric> <CloseParen> <Semicolon> =>
+        Statement::Insert {
+            table: Identifier,
+            values: vec![Numeric],
+        }
+};
+
+Identifier: String = {
+    Token::Identifier(value) => value
+};
+
+Numeric: i32 = {
+    Token::Numeric(value) => value
+};
+
+InsertToken: Token = {
+    Token::Insert
+};
+
+IntoToken: Token = {
+    Token::Into
+};

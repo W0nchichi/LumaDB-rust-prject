@@ -67,7 +67,7 @@ pub fn repl_loop(mut stream: TcpStream) -> io::Result<()> {
 }
 
 pub fn main() -> io::Result<()> {
-    let mut stream = TcpStream::connect(DEFAULT_CONNECTION)?;
+    let stream = TcpStream::connect(DEFAULT_CONNECTION)?;
     if handle_authentication(&stream)? {
         println!("Authentication successful. Entering REPL...");
         repl_loop(stream)?;
