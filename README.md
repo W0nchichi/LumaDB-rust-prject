@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/1ab82d3f-a11b-4ec9-827f-f178e8f5920f)<img src="https://github.com/W0nchichi/images/blob/main/pinkdarkluma-icon.png" />
+<img src="https://github.com/W0nchichi/images/blob/main/pinkdarkluma-icon.png" />
 
 I've just set some basic framworking for my project here, trying to follow this through
 
