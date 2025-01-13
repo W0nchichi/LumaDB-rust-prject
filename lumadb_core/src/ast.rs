@@ -1,13 +1,26 @@
 // src/ast.rs
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum Statement {
-    Select {
-        columns: Vec<Column>,
+    Insert {
         table: String,
-        where_clause: Option<Condition>,
+        values: Vec<i32>,
     },
-    // Need to add more statements like Insert, Delete, etc.
+    // Extend this with more SQL statements as needed
+    Select {
+        table: String,
+        columns: Vec<String>,
+        conditions: Option<String>, // Example for a simple WHERE clause
+    },
+    Update {
+        table: String,
+        values: Vec<(String, String)>, // (column, new_value)
+        conditions: Option<String>,   // Example for a simple WHERE clause
+    },
+    Delete {
+        table: String,
+        conditions: Option<String>,   // Example for a simple WHERE clause
+    },
 }
 
 #[derive(Debug, PartialEq)]

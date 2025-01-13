@@ -11,3 +11,6 @@ members = [
     "lumadb_core",
     "lumadb"
 ]
+
+[dependencies]
+chumsky = "0.9.3"

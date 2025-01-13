@@ -9,7 +9,7 @@ name = "lumadb_core"
 path = "src/lib.rs"
 
 [dependencies]
-lalrpop-util = "0.22.0" # Add lalrpop utility library for runtime support
+chumsky = "0.9.3"
 
 [build-dependencies]
-lalrpop = "0.22.0" # Add lalrpop as a build dependency
+chumsky = "0.9.3" 
