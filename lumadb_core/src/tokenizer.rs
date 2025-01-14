@@ -48,11 +48,6 @@ impl<'a> Tokenizer<'a> {
         self.position += 1;
     }
 
-    // Peek at the next character without consuming it
-    fn peek_char(&mut self) -> Option<char> {
-        self.chars.peek().copied()
-    }
-
     // Skip whitespace characters
     fn skip_whitespace(&mut self) {
         while let Some(c) = self.current_char {
@@ -225,7 +220,7 @@ impl<'a> Tokenizer<'a> {
                 // Handle identifiers and keywords
                 Ok(self.identify_token())
             }
-            None => Ok(Token::EOF),
+            None => Err(LexerError::UnclosedStringLiteral),
             Some(c) => {
                 self.next_char();
                 Ok(Token::Illegal(c))
@@ -239,9 +234,10 @@ impl<'a> Tokenizer<'a> {
         loop {
             let token = self.tokenize_next_token()?;
             tokens.push(token.clone());
-            if token == Token::EOF {
+            if token == Token::Semicolon {
                 break;
             }
+            
         }
         Ok(tokens)
     }

@@ -1,15 +1,10 @@
 use std::io::{Read, Write};
-use std::io::stdin;
-use std::io;
 use std::net::{TcpListener, TcpStream};
 use lumadb::config::DEFAULT_CONNECTION;
 use lumadb_core::tokenizer::Tokenizer;
-use lumadb_core::token::Token;
-use lumadb_core::parser::select_parser;
-use chumsky::Parser;
 
 
-fn authenticate(mut stream: &mut TcpStream) -> Result<bool, String> {
+fn authenticate(stream: &mut TcpStream) -> Result<bool, String> {
     let mut buffer = [0; 512];
     
     // Send username prompt
@@ -40,6 +35,7 @@ fn authenticate(mut stream: &mut TcpStream) -> Result<bool, String> {
     }
 }
 
+/* 
 fn check_for_lost_connection(mut stream: &TcpStream, buffer: &mut [u8; 512]) -> bool{
     match stream.read(buffer) {
         Ok(bytes_read) => {
@@ -57,10 +53,11 @@ fn check_for_lost_connection(mut stream: &TcpStream, buffer: &mut [u8; 512]) -> 
         }
     }
 }
+    */
 
 
 //getting crazy with it
-fn pass_repl_input(mut stream: &mut TcpStream) -> Result<String, String> {
+fn pass_repl_input(stream: &mut TcpStream) -> Result<String, String> {
     let mut buffer = [0; 512];
 
     // Read data from the stream
@@ -75,7 +72,7 @@ fn pass_repl_input(mut stream: &mut TcpStream) -> Result<String, String> {
     Ok(input)
 }
 
-fn server_repl_loop(mut stream: &mut TcpStream){
+fn server_repl_loop(stream: &mut TcpStream){
     //Arnold Schwatznegger voice "grah, I am de tokenator"
     //that felt disgusting to type out
     
@@ -91,18 +88,7 @@ fn server_repl_loop(mut stream: &mut TcpStream){
                 .expect("could not write");
 
         //parsing, needs to be made into it's own function
-        let token_input = tokenated_line.iter().map(|t| t.to_string()).collect::<String>();
-        let parser = select_parser();
-        let result = parser.parse(token_input);
-        match result {
-            Ok(statement) => println!("Parsed successfully: {:?}", statement),
-            Err(errors) => {
-                for error in errors {
-                    println!("Error: {}", error);
-                }
-            }
-        }
-        
+        //let token_input = tokenated_line.iter().map(|t| t.to_string()).collect::<String>();
     }
 }
 
