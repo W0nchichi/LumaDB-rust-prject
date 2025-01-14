@@ -90,6 +90,7 @@ dependencies = [
 name = "lumadb_server"
 version = "0.1.0"
 dependencies = [
+ "chumsky",
  "lumadb",
  "lumadb_core",
 ]

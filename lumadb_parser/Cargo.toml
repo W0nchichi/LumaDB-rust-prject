@@ -1,0 +1,15 @@
+# \luma_db\lumadb_core\Cargo.toml
+[package]
+name = "lumadb_core"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "lumadb_core"
+path = "src/lib.rs"
+
+[dependencies]
+chumsky = "0.9.3"
+
+[build-dependencies]
+chumsky = "0.9.3" 

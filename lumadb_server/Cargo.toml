@@ -8,6 +8,14 @@ edition = "2021"
 # Core crate for shared logic on serverside
 lumadb_core = { path = "../lumadb_core" }
 lumadb = { path = "../lumadb" }
+chumsky = "0.9.3"
+
+[build-dependencies]
+chumsky = "0.9.3" 
+
 [[bin]]
 name = "server"
 path = "src/server.rs"
+
+
+
