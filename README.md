@@ -114,8 +114,14 @@ luma_db 📂
 |   |   ├── tokenizer.rs    # Tokenizes SQL-like input.
 |   │   ├── token.rs        # token enums.
 |   │   ├── ast.rs          # Defines Abstract Syntax Tree structures.
-│   |   ├── datatypes.rs    # In-memory and file-based storage.
-|   │   └── lumadb.lalrpop.rs  # parsing stuff
+│   |   └── datatypes.rs    # In-memory and file-based storage.
+|   └── Cargo.toml  
+├── lumadb_parser 📂 #using chumsky
+|   ├── src 📂
+|   |   ├── lib.rs
+|   |   ├── commands.rs  # Enum of Commands for parsing
+|   |   ├── parser.rs    # The actual parsing handler where can decide
+|   │   └── select.rs    # select statement specific parsing
 |   └── Cargo.toml  
 ├── lumadb 📂
 |   ├── src 📂
@@ -123,6 +129,7 @@ luma_db 📂
 |   |   └── config.rs        # Config settings for the database.
 |   └── Cargo.toml  
 ├── src 📂
+|   └── main.rs  #used for testing stuff
 ├── cargo.toml
 ├── build.rs
 ├── lib.rs
