@@ -1,18 +1,25 @@
 //luma_db/lumadb_parser/src/select.rs
 
 use chumsky::prelude::*;
-use crate::command::{command, WhereClause};
+use chumsky::Parser;
+use crate::commands::{command, WhereClause};
+use lumadb_core::token::Token;
 
 //to run function, use select_parser().parse(input)
 //it's also so wild not using a parameter for this and i'm tweaking
-pub fn select_parser() -> impl Parser<char, Expr, Error = Simple<char>> {
+pub fn select_parser() -> impl Parser<Token, command, Error = Simple<Token>> {
     // Parser for identifiers (column names, table names)
     let identifier = text::ident().padded();
 
     //the <Select s> and <From f> parts are necessary so they can get put first, where is optional
     //as described in the enum
-    // Parser for comma-separated column names
-    let columns = identifier.separated_by(just(",").padded())
+    // Parser for comma-separated column names or just a  '*'
+    let columns = just(Token::Asterisk).map(|_| vec!["*".to_string()])
+        .or(filter_map(|span, token| match token {
+            Token::Identifier(name) => Ok(name),
+            _ => Err(Simple::custom(span, "Expected column identifier")),
+        })
+        .separated_by(just(Token::Comma)))
         .map(|columns| command::Select { columns });
 
     let from_clause = just("FROM")

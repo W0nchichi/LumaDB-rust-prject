@@ -87,12 +87,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "lumadb_parser"
+version = "0.1.0"
+dependencies = [
+ "chumsky",
+ "lumadb_core",
+]
+
+[[package]]
 name = "lumadb_server"
 version = "0.1.0"
 dependencies = [
  "chumsky",
  "lumadb",
  "lumadb_core",
+ "lumadb_parser",
 ]
 
 [[package]]

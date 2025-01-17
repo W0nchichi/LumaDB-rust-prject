@@ -1,14 +1,15 @@
-# \luma_db\lumadb_core\Cargo.toml
+# \luma_db\lumadb_parser\Cargo.toml
 [package]
-name = "lumadb_core"
+name = "lumadb_parser"
 version = "0.1.0"
 edition = "2021"
 
 [lib]
-name = "lumadb_core"
+name = "lumadb_parser"
 path = "src/lib.rs"
 
 [dependencies]
+lumadb_core = { path = "../lumadb_core" }
 chumsky = "0.9.3"
 
 [build-dependencies]

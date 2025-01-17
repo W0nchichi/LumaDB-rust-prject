@@ -2,6 +2,7 @@ use std::io::{Read, Write};
 use std::net::{TcpListener, TcpStream};
 use lumadb::config::DEFAULT_CONNECTION;
 use lumadb_core::tokenizer::Tokenizer;
+use lumadb_parser::Parser;
 
 
 fn authenticate(stream: &mut TcpStream) -> Result<bool, String> {
@@ -54,6 +55,15 @@ fn check_for_lost_connection(mut stream: &TcpStream, buffer: &mut [u8; 512]) -> 
     }
 }
     */
+
+fn parse(input: &Vec<Token>){
+    let parser = parse_input(input.join(" "));
+    let result = parser.parse();
+    match result {
+        Ok(command) => println!("Parsed command: {:?}", command),
+        Err(errors) => println!("Parsing errors: {:?}", errors),
+    }
+}
 
 
 //getting crazy with it
